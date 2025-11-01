@@ -29,3 +29,51 @@ Your output files must be structured exactly as described - output files for all
 Note:
 Your code will only be tested on valid files in the format shown in the 4 example files in this folder - you do not need to validate any data.
 '''
+import csv
+
+def calculate_total_marks(grades):
+    valid_grades = [int(g) for g in grades if g.strip() != '']
+    if not valid_grades:
+        return 0
+    return sum(valid_grades)/ len(valid_grades)
+
+def grade_classifier(average):
+    if average >= 70:
+        return '1'
+    elif average >= 60:
+        return '2:1'
+    elif average >= 50:
+        return '2:2'
+    elif average >= 40:
+        return '3'
+    else:
+        return 'F'
+
+def main():
+    
+    filename = input("Please enter the CSV filename: ")
+
+    with open(filename, newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        header = next(reader)
+        output_data = []
+
+        for row in reader:
+            student_id = row[0]
+            grades = row[1:]
+            average = calculate_total_marks(grades)
+            classification = grade_classifier(average)
+            output_data.append([student_id, "{:.2f}".format(average), classification])
+            
+    output_filename = filename + "_out.csv"
+    with open(output_filename, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        for line in output_data:
+            writer.writerow(line)
+
+    print(f"Results have been written to {output_filename}")
+
+
+if __name__ == "__main__":
+    main()
+
